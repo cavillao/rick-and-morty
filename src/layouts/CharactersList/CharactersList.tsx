@@ -1,28 +1,32 @@
 import { useQuery, gql } from "@apollo/react-hooks";
 import StarredEmpty from "../../assets/StarredEmpty.svg";
 import { Characters } from "../../interfaces/characters";
-//import client from "../../api/apollo";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const OBTENER_DATOS = gql`
   query {
     characters(page: 1) {
       results {
+        id
         name
         image
         species
+        status
       }
     }
   }
 `;
 
-function CharactersList() {
+function CharactersList({ getCharacterNameOnList }: any) {
   const { loading, error, data } = useQuery(OBTENER_DATOS);
-  //console.log("esta vaina", data.characters.results);
+  console.log("esta vaina", data);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <pre>{error.message}</pre>;
+
+  const openCharacter = (characterName: any) => {
+    getCharacterNameOnList(characterName);
+  };
 
   return (
     <>
@@ -34,7 +38,11 @@ function CharactersList() {
           {data.characters.results.map(
             (character: Characters, index: number) => (
               <li key={index}>
-                <div className="flex py-4 border-t-[1px] border-[#E5E7EB]">
+                <Link
+                  to={character.name}
+                  className="flex py-4 border-t-[1px] border-[#E5E7EB]"
+                  onClick={() => openCharacter(character)}
+                >
                   <img
                     src={character.image}
                     alt={`${character.name}`}
@@ -53,7 +61,7 @@ function CharactersList() {
                     alt="Empty"
                     className="flex-none mr-[7px]"
                   />
-                </div>
+                </Link>
               </li>
             )
           )}

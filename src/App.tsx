@@ -1,13 +1,29 @@
-import React from "react";
-import { ApolloProvider } from "@apollo/react-hooks";
-//import client from "./api/apollo";
+import React, { useState } from "react";
 import Home from "./pages/Home";
+import CharacterInfo from "./pages/CharacterInfo";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
+  const [characterName, setCharacterName] = useState<any>("");
+  console.log("En app", characterName);
+
+  const getCharacterName = (characterName: any) => {
+    setCharacterName(characterName);
+  };
+
   return (
-    <div>
-      <Home />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<Home getCharacterName={getCharacterName} />}
+        />
+        <Route
+          path={characterName.name}
+          element={<CharacterInfo characterName={characterName} />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
